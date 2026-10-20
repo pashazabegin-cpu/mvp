@@ -1,0 +1,11 @@
+/* только для демо-страницы */
+html, body { margin: 0; background: #030f1c; }
+.demo-after {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  color: rgba(255, 255, 255, .4);
+  font: 300 14px/1.4 "Space Grotesk", system-ui, sans-serif;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}

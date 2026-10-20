@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MVP — первый экран</title>
+  <link rel="icon" href="data:,">
+</head>
+<body>
+
+<!--
+  Первый экран: прелоадер → 5 слайдов (по 5 с) с переходом «полосами под углом».
+  Модуль: src/hero (initHero). Разметка ниже — то, что сервер (PHP-шаблон) отдаёт как есть,
+  JS только оживляет её через data-атрибуты.
+-->
+<section class="hero" data-hero data-autoplay="5000" data-angle="16.76" aria-roledescription="carousel" aria-label="События MVP">
+
+  <!-- ─── Прелоадер (Lottie) ─── -->
+  <div class="hero-preloader" data-hero-preloader>
+    <div class="hero-preloader__anim" data-lottie></div>
+  </div>
+
+  <div class="hero__slides">
+
+    <!-- ═════════ 1. Премия ═════════ -->
+    <article class="hero-slide" data-slide="award" data-focus="1150" data-accent="#31a8f3" aria-label="Премия">
+      <div class="hero-slide__zoom">
+        <div class="hero-canvas" style="--slide-bg:#030f1c">
+          <div class="award-video" data-pblur="50" data-pblur-from="0.52" data-pblur-to="0.92">
+            <video src="hero/award/statuette-1080.mp4" poster="hero/award/poster.jpg" muted playsinline preload="auto" data-hero-video></video>
+          </div>
+          <i class="hero-shade hero-shade--bottom"></i>
+        </div>
+      </div>
+      <div class="hero-ui">
+        <div class="hero-content">
+          <div class="hero-tag" data-anim="tag" style="--tag:#31a8f3">
+            <span>Москва,</span><span>24 / 30 мая 2025</span>
+          </div>
+          <h1 class="award-logo" data-anim="parts">
+            <img class="award-logo__icon" src="hero/award/logo-icon.svg" width="85.27" height="83.08" alt="">
+            <img class="award-logo__mvp" src="hero/award/logo-mvp.svg" width="181.88" height="71.96" alt="MVP awards">
+            <img class="award-logo__text" src="hero/award/logo-text.svg" width="248.47" height="71.92" alt="Премия по спортивному маркетингу">
+          </h1>
+          <a class="hero-btn" href="#apply" data-anim="btn">
+            <span class="hero-btn__label">Подать заяву</span>
+            <img class="hero-btn__icon" src="hero/common/btn-dots.svg" width="13.51" height="11.82" alt="">
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ═════════ 2. Форум ═════════ -->
+    <article class="hero-slide" data-slide="forum" data-focus="1100" data-accent="#fa3294" aria-label="Форум">
+      <div class="hero-slide__zoom">
+        <div class="hero-canvas" style="--slide-bg:#030404">
+          <div class="forum-photo" data-pblur="50" data-pblur-from="0.47" data-pblur-to="0.70">
+            <img src="hero/forum/photo.jpg" alt="" decoding="async">
+          </div>
+          <i class="forum-photo-tint"></i>
+          <i data-glow="-765 -119 1358.25 1282 300 #821e64 0.3"></i>
+          <i data-glow="-597.66 49.58 1076.72 982.91 204.7 #fa3294 0.3"></i>
+          <i class="hero-shade hero-shade--bottom"></i>
+          <i class="hero-shade hero-shade--top"></i>
+        </div>
+      </div>
+      <div class="hero-ui">
+        <div class="hero-content">
+          <div class="hero-tag hero-tag--forum" data-anim="tag" style="--tag:#fa3294">
+            <span>Москва,</span><span>24 / 30 мая 2025</span>
+          </div>
+          <h2 class="forum-logo" data-anim="parts">
+            <img src="hero/forum/logo.svg" width="570" height="90.71" alt="MVP форум — форум по спортивному маркетингу">
+          </h2>
+          <a class="hero-btn" href="#forum" data-anim="btn">
+            <span class="hero-btn__label">Подробнее</span>
+            <img class="hero-btn__icon" src="hero/common/btn-dots.svg" width="13.51" height="11.82" alt="">
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ═════════ 3. Квизмас ═════════ -->
+    <article class="hero-slide" data-slide="kvizmass" data-focus="1180" data-accent="#0e4697" aria-label="Квизмас">
+      <div class="hero-slide__zoom">
+        <div class="hero-canvas" style="--slide-bg:#020611">
+          <i data-glow="910 -232 1079.98 1039 300 #04285e 1"></i>
+          <i data-glow="1043.06 -95.38 856.13 796.6 204.7 #094194 1"></i>
+          <div class="kviz-podium" data-magnetic="0.035" data-pblur="15" data-pblur-from="0.51" data-pblur-to="0.88">
+            <img src="hero/kvizmass/podium.png" alt="" decoding="async">
+          </div>
+          <i class="hero-shade hero-shade--bottom"></i>
+        </div>
+      </div>
+      <div class="hero-ui">
+        <div class="hero-content">
+          <p class="kviz-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
+          <h2 class="kviz-logo" data-anim="parts">
+            <img src="hero/kvizmass/logo-full.png" width="534" height="75.37" alt="MVP Квизмас">
+          </h2>
+          <a class="hero-btn" href="#kvizmass" data-anim="btn">
+            <span class="hero-btn__label">Подробнее</span>
+            <img class="hero-btn__icon" src="hero/common/btn-dots.svg" width="13.51" height="11.82" alt="">
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ═════════ 4. Рейтинг ═════════ -->
+    <article class="hero-slide" data-slide="rating" data-accent="#31a8f3" aria-label="Рейтинг">
+      <div class="hero-slide__zoom">
+        <div class="hero-canvas" style="--slide-bg:#0d1529" data-stripes>
+          <!-- WebGL-версия фона (rating.ts); HTML-слои ниже — запасной вариант без WebGL -->
+          <canvas class="gl-layer" data-gl></canvas>
+          <!-- «лесенки»: позиции/градиенты/режимы наложения 1:1 из Figma -->
+          <div class="stripe" style="left:741.04px;top:-83.76px;width:274.49px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(265.28deg,rgba(8,55,124,0) 13.27%,#521d48 95.5%)" data-depth="0.9"><i></i></div>
+          <div class="stripe" style="left:1387.44px;top:-111.41px;width:82.74px;height:1409.07px;mix-blend-mode:hard-light;--g:linear-gradient(268.95deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.4"><i></i></div>
+          <div class="stripe" style="left:1476.65px;top:-106.06px;width:119.82px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(-82.11deg,rgba(82,29,72,0) 32.15%,#08377c 72.14%)" data-depth="1.1"><i></i></div>
+          <div class="stripe" style="left:615.6px;top:-171.33px;width:145px;height:1392.56px;mix-blend-mode:overlay;--g:linear-gradient(268.13deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.25"><i></i></div>
+          <div class="stripe" style="left:392.58px;top:-169.62px;width:210px;height:1423.33px;mix-blend-mode:multiply;--g:linear-gradient(267.36deg,rgba(8,55,124,0) 7.27%,#521d48 99.6%)" data-depth="0.7"><i></i></div>
+          <div class="stripe" style="left:124.68px;top:-253.93px;width:270px;height:1507.27px;mix-blend-mode:overlay;--g:linear-gradient(266.79deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1"><i></i></div>
+          <div class="stripe" style="left:-296.16px;top:-195.91px;width:403px;height:1410.49px;mix-blend-mode:hard-light;--g:linear-gradient(264.89deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="0.6"><i></i></div>
+          <i data-glow="-765 -119 1358.25 1282 300 #821e64 0.3 hard-light"></i>
+          <i data-glow="-597.66 49.58 1076.72 982.91 204.7 #fa3294 0.3 color-dodge"></i>
+          <i data-glow="1265 -36 999.09 943 300 #04285e 1 plus-lighter"></i>
+          <i data-glow="1388.09 88 792 723 204.7 #164fa4 1 color-dodge"></i>
+          <i class="hero-shade hero-shade--soft"></i>
+        </div>
+      </div>
+      <i class="stripes-light" data-stripes-light></i>
+      <div class="hero-ui">
+        <div class="hero-content">
+          <h2 class="rating-logo" data-anim="parts">
+            <img src="hero/rating/logo.svg" width="540" height="82.04" alt="MVP Rating">
+          </h2>
+          <p class="rating-lead" data-anim="lines">Новый Рейтинг эффективности спортивного маркетинга —<br>это комплексный анализ рынка через призму достижений его участников.</p>
+          <a class="hero-btn" href="#rating" data-anim="btn">
+            <span class="hero-btn__label">Подробнее</span>
+            <img class="hero-btn__icon" src="hero/common/btn-dots.svg" width="13.51" height="11.82" alt="">
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ═════════ 5. Премия и форум ═════════ -->
+    <article class="hero-slide" data-slide="duo" data-focus="1110" data-accent="#31a8f3" aria-label="Премия и форум">
+      <div class="hero-slide__zoom">
+        <div class="hero-canvas" style="--slide-bg:#0c1836" data-ray-root>
+          <!-- WebGL-версия слайда (duo.ts); HTML-слои ниже — запасной вариант и «ручки» для анимации логотипов -->
+          <canvas class="gl-layer" data-gl data-tex-base="hero/duo/bg-base.jpg" data-tex-ray="hero/duo/bg-ray.jpg" data-tex-blue="hero/duo/logo-blue.svg" data-tex-pink="hero/duo/logo-pink.svg"></canvas>
+          <!-- фон 1:1 из Figma (рендер 2x): база + слой с лучом, который «прорастает» маской из точки внизу -->
+          <img class="duo-bg" src="hero/duo/bg-base.jpg" alt="">
+          <img class="duo-bg duo-bg--ray" src="hero/duo/bg-ray.jpg" alt="" data-ray>
+          <!-- синий слой логотипа: в Figma Linear burn. Он запечён поверх фона из Figma (обычная картинка, без
+               режимов наложения): вариант без луча и с лучом, второй раскрывается той же маской, что и луч. -->
+          <div class="duo-logo duo-logo--blue" data-magnetic="0.022">
+            <img src="hero/duo/logo-blue-on-base.webp" alt="">
+            <img class="duo-logo__ray" src="hero/duo/logo-blue-on-ray.webp" alt="" data-ray>
+          </div>
+          <img class="duo-logo duo-logo--pink" src="hero/duo/logo-pink.svg" alt="" data-magnetic="0.05">
+        </div>
+      </div>
+      <div class="hero-ui">
+        <div class="hero-content">
+          <h2 class="duo-title" data-anim="parts">
+            <img src="hero/duo/title.svg" width="542" height="64.49" alt="Премия × форум">
+          </h2>
+          <p class="duo-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─── Общая шапка и навигация (не участвуют в переходе) ─── -->
+  <div class="hero-ui hero-chrome">
+    <a class="hc-partner" href="https://betboom.ru" target="_blank" rel="noopener" data-intro>
+      <img src="hero/common/betboom.svg" width="136" height="23.8" alt="BetBoom">
+      <span>официальный партнер</span>
+    </a>
+    <a class="hc-mark" href="/" aria-label="MVP — на главную" data-intro="mark">
+      <span class="hc-mark__top"><img src="hero/common/mark-top.svg" alt=""></span>
+      <span class="hc-mark__mid"><img src="hero/common/mark-middle.svg" alt=""></span>
+      <span class="hc-mark__bot"><img src="hero/common/mark-bottom.svg" alt=""></span>
+    </a>
+    <a class="hc-contact" href="#contacts" data-intro>
+      <span>Связаться с нами</span>
+      <img class="hc-contact__arrow" src="hero/common/arrow.svg" width="14.84" height="13.55" alt="">
+    </a>
+    <a class="hc-social hc-social--tg" href="https://t.me/" target="_blank" rel="noopener" aria-label="Telegram" data-intro>
+      <img src="hero/common/telegram.svg" width="20" height="20" alt="">
+    </a>
+    <a class="hc-social hc-social--vk" href="https://vk.com/" target="_blank" rel="noopener" aria-label="ВКонтакте" data-intro>
+      <img src="hero/common/vk.svg" width="20" height="20" alt="">
+    </a>
+
+    <nav class="hero-nav" aria-label="Слайды">
+      <button class="hero-nav__item" type="button" data-goto="0"><span class="hero-nav__bar"><i class="hero-nav__fill"></i></span><span class="hero-nav__label"><span data-text="Премия">Премия</span></span></button>
+      <button class="hero-nav__item" type="button" data-goto="1"><span class="hero-nav__bar"><i class="hero-nav__fill"></i></span><span class="hero-nav__label"><span data-text="Форум">Форум</span></span></button>
+      <button class="hero-nav__item" type="button" data-goto="2"><span class="hero-nav__bar"><i class="hero-nav__fill"></i></span><span class="hero-nav__label"><span data-text="Квизмас">Квизмас</span></span></button>
+      <button class="hero-nav__item" type="button" data-goto="3"><span class="hero-nav__bar"><i class="hero-nav__fill"></i></span><span class="hero-nav__label"><span data-text="Рейтинг">Рейтинг</span></span></button>
+      <button class="hero-nav__item" type="button" data-goto="4"><span class="hero-nav__bar"><i class="hero-nav__fill"></i></span><span class="hero-nav__label"><span data-text="Премия и форум">Премия и форум</span></span></button>
+    </nav>
+  </div>
+</section>
+
+<!-- Заглушка «остального сайта», чтобы было видно поведение экрана при скролле -->
+<section class="demo-after">
+  <p>Здесь продолжается сайт</p>
+</section>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
