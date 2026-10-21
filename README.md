@@ -1,6 +1,6 @@
 # MVP — первый экран (hero)
 
-Прелоадер (Lottie) → интро → 5 слайдов по 5 секунд с прогрессом в навигации → переход наклонными полосами (16.76°).
+Прелоадер (Lottie) → интро → 5 слайдов по 7 секунд с прогрессом в навигации → переход наклонными полосами (16.76°).
 Один модуль на чистом TypeScript + GSAP, без фреймворков. Работает поверх серверной разметки.
 
 ```bash
@@ -46,7 +46,7 @@ npm run build    # проверка типов + сборка в dist/
 4. Разметку `<section class="hero" data-hero>…</section>` из `index.html` перенести в шаблон главной.
 
 API: `initHero(el, options)` возвращает `{ next, prev, goTo(i), pause, play, destroy }`.
-Опции: `autoplay` (мс, по умолчанию 5000), `angle` (16.76), `stripCount` (10), `revealDuration` (0.5), `stripStagger` (0.04), `zoomFrom` (1.2), `zoomDuration` (0.9), `onReady`, `onChange(i)`.
+Опции: `autoplay` (мс, по умолчанию 7000; в разметке — `data-autoplay`), `angle` (16.76), `stripCount` (10), `revealDuration` (0.5), `stripStagger` (0.04), `zoomFrom` (1.2), `zoomDuration` (0.9), `onReady`, `onChange(i)`.
 
 ## Заметки
 

@@ -5,7 +5,7 @@
  *   initHero(document.querySelector('[data-hero]')!);
  *
  * Работает поверх серверной разметки (см. index.html): прелоадер → интро первого слайда →
- * автопрокрутка по 5 с с прогрессом в навигации → переход наклонными полосами.
+ * автопрокрутка по 7 с с прогрессом в навигации → переход наклонными полосами.
  */
 import { gsap } from 'gsap';
 import { stripsPolygon, spansFor, type StripMode } from './strips';
@@ -18,7 +18,7 @@ import { createRays } from './duo';
 import { runPreloader } from './preloader';
 
 export interface HeroOptions {
-  /** длительность слайда, мс (по умолчанию data-autoplay или 5000) */
+  /** длительность слайда, мс (по умолчанию data-autoplay или 7000) */
   autoplay?: number;
   /** наклон полос перехода, градусы (по умолчанию data-angle или 16.76) */
   angle?: number;
@@ -38,7 +38,7 @@ type Dir = 'next' | 'prev';
 
 export function initHero(root: HTMLElement, options: HeroOptions = {}) {
   const o = {
-    autoplay: Number(root.dataset.autoplay ?? 5000),
+    autoplay: Number(root.dataset.autoplay ?? 7000),
     angle: Number(root.dataset.angle ?? 16.76),
     stripCount: 10,
     revealDuration: 0.5,
