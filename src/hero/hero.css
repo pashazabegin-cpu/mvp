@@ -106,13 +106,13 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 .hc-mark { position: absolute; left: 775px; top: 72px; width: 50.833px; height: 50px; }
 /* GSAP анимирует span (интро), ховер двигает img внутри — свойства не пересекаются */
 .hc-mark > span { position: absolute; width: 38.85px; height: 15.79px; }
-.hc-mark img { width: 100%; height: 100%; transition: transform .6s cubic-bezier(.22, 1, .36, 1); }
+.hc-mark img { width: 100%; height: 100%; transition: transform .5s ease; }
 .hc-mark__top { left: 11.98px; top: 0; }
 .hc-mark__mid { left: 0; top: 17.1px; }
 .hc-mark__bot { left: 11.98px; top: 34.21px; }
-.hc-mark:hover .hc-mark__top img,
-.hc-mark:hover .hc-mark__bot img { transform: translateX(-6px); }
-.hc-mark:hover .hc-mark__mid img { transform: translateX(6px); }
+/* как точки на кнопке: средний элемент (сдвинут влево на 11.98) проезжает на шаг вправо и встаёт зеркально */
+.hc-mark:hover .hc-mark__mid img,
+.hc-mark:focus-visible .hc-mark__mid img { transform: translateX(23.96px); }
 
 .hc-contact { position: absolute; left: 1118.08px; top: 78.03px; height: 18.45px; display: flex; align-items: center; gap: 7px; font-size: 14px; line-height: 1.2; white-space: nowrap; }
 .hc-contact span { position: relative; }
