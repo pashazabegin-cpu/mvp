@@ -283,7 +283,7 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 }
 .duo-bg--ray { -webkit-mask-image: var(--ray-mask); mask-image: var(--ray-mask); }
 .duo-logo { width: 368.59px; height: 360.27px; pointer-events: none; }
-.duo-logo--blue { left: 908.96px; top: 276.03px; will-change: transform; }
+.duo-logo--blue { left: 958px; top: 276.03px; will-change: transform; }
 .duo-logo--blue img { position: absolute; inset: 0; width: 100%; height: 100%; }
 /* маска в координатах всего кадра 1600×900, чтобы граница луча совпадала с фоном */
 .duo-logo__ray {
@@ -291,12 +291,12 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
   mask-image: var(--ray-mask);
   -webkit-mask-size: 1600px 900px;
   mask-size: 1600px 900px;
-  -webkit-mask-position: -908.96px -276.03px;
-  mask-position: -908.96px -276.03px;
+  -webkit-mask-position: -958px -276.03px;
+  mask-position: -958px -276.03px;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 }
-.duo-logo--pink { left: 936.96px; top: 248.04px; mix-blend-mode: screen; }
+.duo-logo--pink { left: 986px; top: 248.04px; mix-blend-mode: screen; }
 .duo-title { left: 245px; top: 357.92px; }
 .duo-title img { width: 542px; height: 64.49px; }
 .duo-lead { left: 244px; top: 492px; width: 476px; font-size: 20px; line-height: 30px; }
