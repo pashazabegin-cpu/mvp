@@ -52,16 +52,36 @@ vec3 blendMode(vec3 b, vec3 s, float a, float mode) {
 export interface GLLayer {
   gl: WebGLRenderingContext;
   uniform(name: string): WebGLUniformLocation | null;
-  /** загрузить картинку/canvas в текстурный слот */
+  /** загрузить картинку/canvas в текстурный слот (запоминается и заливается заново после восстановления контекста) */
   texture(unit: number, name: string, source: TexImageSource): void;
   /** пересчитать размер canvas под текущий масштаб макета на экране */
   resize(cover: number): void;
   draw(): void;
+  /** контекст сейчас рабочий (не отобран браузером) */
+  readonly alive: boolean;
 }
 
-export function createGLLayer(canvas: HTMLCanvasElement, fragment: string, maxScale = 2): GLLayer | null {
+export interface GLLayerHooks {
+  /** браузер отобрал контекст (нехватка видеопамяти, сброс GPU) — показать HTML-версию */
+  onLost?: () => void;
+  /** контекст вернули, шейдер и текстуры уже собраны заново — задать постоянные uniform'ы и перерисовать */
+  onRestored?: () => void;
+}
+
+export function createGLLayer(canvas: HTMLCanvasElement, fragment: string, maxScale = 2, hooks: GLLayerHooks = {}): GLLayer | null {
   const gl = canvas.getContext('webgl', { alpha: false, antialias: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
   if (!gl) return null;
+
+  const uniforms = new Map<string, WebGLUniformLocation | null>();
+  const textures = new Map<number, { name: string; source: TexImageSource }>();
+  let program: WebGLProgram | null = null;
+  let size = { w: 0, h: 0, scale: 1 };
+
+  const uniform = (name: string) => {
+    if (!program) return null;
+    if (!uniforms.has(name)) uniforms.set(name, gl.getUniformLocation(program, name));
+    return uniforms.get(name)!;
+  };
 
   const compile = (type: number, src: string) => {
     const sh = gl.createShader(type)!;
@@ -73,63 +93,83 @@ export function createGLLayer(canvas: HTMLCanvasElement, fragment: string, maxSc
     }
     return sh;
   };
-  const vs = compile(gl.VERTEX_SHADER, VERT);
-  const fs = compile(gl.FRAGMENT_SHADER, fragment);
-  if (!vs || !fs) return null;
-  const program = gl.createProgram()!;
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.warn('[hero gl]', gl.getProgramInfoLog(program));
-    return null;
-  }
-  gl.useProgram(program);
 
-  // один треугольник на весь экран
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(program, 'a_pos');
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-  const uniforms = new Map<string, WebGLUniformLocation | null>();
-  const uniform = (name: string) => {
-    if (!uniforms.has(name)) uniforms.set(name, gl.getUniformLocation(program, name));
-    return uniforms.get(name)!;
+  const upload = (unit: number, name: string, source: TexImageSource) => {
+    const tex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.uniform1i(uniform(name), unit);
   };
 
-  let scale = 1;
+  const applySize = () => {
+    gl.viewport(0, 0, size.w, size.h);
+    gl.uniform2f(uniform('u_res'), size.w, size.h);
+    gl.uniform1f(uniform('u_scale'), size.scale);
+  };
+
+  // программа, геометрия и текстуры; вызывается при создании и после восстановления контекста
+  const build = (): boolean => {
+    uniforms.clear();
+    const vs = compile(gl.VERTEX_SHADER, VERT);
+    const fs = compile(gl.FRAGMENT_SHADER, fragment);
+    if (!vs || !fs) return false;
+    const p = gl.createProgram()!;
+    gl.attachShader(p, vs);
+    gl.attachShader(p, fs);
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+      console.warn('[hero gl]', gl.getProgramInfoLog(p));
+      return false;
+    }
+    program = p;
+    gl.useProgram(p);
+    // один треугольник на весь экран
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(p, 'a_pos');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    textures.forEach((t, unit) => upload(unit, t.name, t.source));
+    if (size.w) applySize();
+    return true;
+  };
+  if (!build()) return null;
+
+  canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault(); // разрешаем браузеру вернуть контекст
+    hooks.onLost?.();
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    if (build()) hooks.onRestored?.();
+  });
+
   return {
     gl,
     uniform,
     texture(unit, name, source) {
-      const tex = gl.createTexture();
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.uniform1i(uniform(name), unit);
+      textures.set(unit, { name, source });
+      upload(unit, name, source);
     },
     resize(cover) {
-      scale = Math.min(cover * (window.devicePixelRatio || 1), maxScale);
-      const w = Math.round(1600 * scale);
-      const h = Math.round(900 * scale);
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
+      const scale = Math.min(cover * (window.devicePixelRatio || 1), maxScale);
+      size = { w: Math.round(1600 * scale), h: Math.round(900 * scale), scale };
+      if (canvas.width !== size.w || canvas.height !== size.h) {
+        canvas.width = size.w;
+        canvas.height = size.h;
       }
-      gl.viewport(0, 0, w, h);
-      gl.uniform2f(uniform('u_res'), w, h);
-      gl.uniform1f(uniform('u_scale'), scale);
+      applySize();
     },
     draw() {
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (!gl.isContextLost()) gl.drawArrays(gl.TRIANGLES, 0, 3);
+    },
+    get alive() {
+      return !gl.isContextLost();
     },
   };
 }

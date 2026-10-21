@@ -144,22 +144,7 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 }
 .hero-nav__bar { position: relative; display: block; height: 5px; overflow: hidden; }
 /* дорожка 2px */
-.hero-nav__bar::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(217, 217, 217, .2); transition: background-color .4s; }
-/* ховер: белая полоса 5px выезжает слева (под прогрессом) */
-.hero-nav__bar::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 5px;
-  background: rgba(255, 255, 255, .32);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform .7s cubic-bezier(.22, 1, .36, 1);
-}
-.hero-nav__item:hover .hero-nav__bar::after { transform: scaleX(1); transform-origin: left; }
-.hero-nav__item:hover .hero-nav__bar::before { background: rgba(217, 217, 217, .4); }
+.hero-nav__bar::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(217, 217, 217, .2); }
 /* прогресс: цветная полоса 5px на всю ширину пункта */
 .hero-nav__fill { position: absolute; left: 0; bottom: 0; z-index: 1; width: 100%; height: 5px; background: var(--accent); transform-origin: left; transform: scaleX(var(--p)); }
 
@@ -215,8 +200,11 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 }
 .hero-btn:hover::before { transform: translateX(120%); }
 .hero-btn__label { display: block; }
-.hero-btn__icon { width: 13.51px; height: 11.82px; transition: transform .6s cubic-bezier(.22, 1, .36, 1); }
-.hero-btn:hover .hero-btn__icon { transform: rotate(90deg); }
+.hero-btn__icon { width: 13.51px; height: 11.82px; fill: currentColor; overflow: visible; }
+/* средний ряд точек сдвинут влево (зигзаг); при наведении встаёт ровно под верхними — как на mvpa.ru/forum */
+.hero-btn__dots-mid { transition: transform .5s ease; }
+.hero-btn:hover .hero-btn__dots-mid,
+.hero-btn:focus-visible .hero-btn__dots-mid { transform: translateX(3.377px); }
 
 /* 1. Премия */
 .award-video { inset: 0; overflow: hidden; }
@@ -334,5 +322,5 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-btn::before, .hc-mark img, .hc-contact__arrow, .hc-social img { transition: none; }
+  .hero-btn::before, .hero-btn__dots-mid, .hc-mark img, .hc-contact__arrow, .hc-social img { transition: none; }
 }

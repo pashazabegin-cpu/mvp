@@ -131,7 +131,17 @@ function setupStatic(layer: GLLayer) {
 
 export function createStripes(slide: HTMLElement, getCover: () => number) {
   const canvas = slide.querySelector<HTMLCanvasElement>('canvas[data-gl]');
-  const layer = canvas ? createGLLayer(canvas, FRAG, 1.5) : null;
+  const layer = canvas
+    ? createGLLayer(canvas, FRAG, 1.5, {
+        // браузер отобрал видеокарту — на время показываем HTML-версию, потом возвращаемся к шейдеру
+        onLost: () => slide.classList.remove('is-gl'),
+        onRestored: () => {
+          setupStatic(layer!);
+          slide.classList.add('is-gl');
+          api.resize();
+        },
+      })
+    : null;
   if (layer) {
     setupStatic(layer);
     slide.classList.add('is-gl');
@@ -157,6 +167,7 @@ export function createStripes(slide: HTMLElement, getCover: () => number) {
     cur.y += (target.y - cur.y) * 0.12;
     cur.on += (target.on - cur.on) * 0.05;
 
+    const glOn = !!layer && layer.alive;
     stripes.forEach((s, i) => {
       // расстояние от курсора до оси наклонной полосы на высоте курсора
       const d = cur.dx - (s.cx + (s.cy - cur.dy) * TAN);
@@ -167,14 +178,14 @@ export function createStripes(slide: HTMLElement, getCover: () => number) {
       const glow = Math.min(1.6, 0.45 + 0.35 * cur.on * (0.5 + 0.5 * Math.cos(t * 0.8 + s.phase)) + 0.55 * near);
       dyn.set([x, sheen * 0.02, glow, 0], i * 4);
 
-      if (!layer && domStripes[i]) {
+      if (!glOn && domStripes[i]) {
         domStripes[i].el.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
         domStripes[i].inner.style.setProperty('--sheen', `${sheen.toFixed(1)}%`);
         domStripes[i].inner.style.setProperty('--sheen-o', glow.toFixed(3));
       }
     });
 
-    if (layer) {
+    if (glOn) {
       layer.gl.uniform4fv(layer.uniform('u_sDyn'), dyn);
       layer.gl.uniform4f(layer.uniform('u_light'), cur.dx, cur.dy, 450 / getCover(), cur.on);
       layer.draw();

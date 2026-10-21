@@ -61,7 +61,24 @@ export function createRays(slide: HTMLElement, getCover: () => number) {
   const domRoot = slide.querySelector<HTMLElement>('[data-ray-root]');
   const state = { ray: 1, rayOpacity: 1 };
 
-  const layer = canvas ? createGLLayer(canvas, FRAG, 2) : null;
+  const setColors = () => {
+    if (!layer) return;
+    layer.gl.uniform3f(layer.uniform('u_blueColor'), BLUE.color[0] / 255, BLUE.color[1] / 255, BLUE.color[2] / 255);
+    layer.gl.uniform3f(layer.uniform('u_pinkColor'), PINK.color[0] / 255, PINK.color[1] / 255, PINK.color[2] / 255);
+  };
+  const layer = canvas
+    ? createGLLayer(canvas, FRAG, 2, {
+        // браузер отобрал видеокарту — на время показываем HTML-версию; текстуры GL-слой зальёт заново сам
+        onLost: () => slide.classList.remove('is-gl'),
+        onRestored: () => {
+          setColors();
+          if (!ready) return;
+          slide.classList.add('is-gl');
+          layer!.resize(getCover());
+          frame();
+        },
+      })
+    : null;
   let ready = false;
   let running = false;
   let idle: gsap.core.Tween | null = null;
@@ -73,7 +90,7 @@ export function createRays(slide: HTMLElement, getCover: () => number) {
   };
 
   const frame = () => {
-    if (!layer || !ready) {
+    if (!layer || !ready || !layer.alive) {
       // HTML-версия: маска луча через CSS-переменную, прозрачность — на картинках с лучом
       domRoot?.style.setProperty('--ray', state.ray.toFixed(4));
       domRays.forEach((el) => (el.style.opacity = String(state.rayOpacity)));
@@ -89,9 +106,7 @@ export function createRays(slide: HTMLElement, getCover: () => number) {
   };
 
   if (layer) {
-    const { gl, uniform } = layer;
-    gl.uniform3f(uniform('u_blueColor'), BLUE.color[0] / 255, BLUE.color[1] / 255, BLUE.color[2] / 255);
-    gl.uniform3f(uniform('u_pinkColor'), PINK.color[0] / 255, PINK.color[1] / 255, PINK.color[2] / 255);
+    setColors();
     // текстуры: data-tex-* на canvas (фон без луча, с лучом, формы логотипов)
     const tex = canvas!.dataset;
     Promise.all([
