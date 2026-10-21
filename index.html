@@ -54,10 +54,10 @@
     <article class="hero-slide" data-slide="forum" data-focus="1100" data-accent="#fa3294" aria-label="Форум">
       <div class="hero-slide__zoom">
         <div class="hero-canvas" style="--slide-bg:#030404">
-          <div class="forum-photo" data-pblur="50" data-pblur-from="0.47" data-pblur-to="0.70">
-            <img src="hero/forum/photo.jpg" alt="" decoding="async">
+          <!-- видео на весь кадр (в макете — слой «mvpforum»); видео 2–3 слайдов грузятся после прелоадера (data-deferred) -->
+          <div class="forum-video">
+            <video src="hero/forum/forum-1080.mp4" poster="hero/forum/poster.jpg" muted playsinline preload="none" data-hero-video data-deferred></video>
           </div>
-          <i class="forum-photo-tint"></i>
           <i data-glow="-765 -119 1358.25 1282 300 #821e64 0.3"></i>
           <i data-glow="-597.66 49.58 1076.72 982.91 204.7 #fa3294 0.3"></i>
           <i class="hero-shade hero-shade--bottom"></i>
@@ -84,10 +84,9 @@
     <article class="hero-slide" data-slide="kvizmass" data-focus="1180" data-accent="#0e4697" aria-label="Квизмас">
       <div class="hero-slide__zoom">
         <div class="hero-canvas" style="--slide-bg:#020611">
-          <i data-glow="910 -232 1079.98 1039 300 #04285e 1"></i>
-          <i data-glow="1043.06 -95.38 856.13 796.6 204.7 #094194 1"></i>
-          <div class="kviz-podium" data-magnetic="0.035" data-pblur="15" data-pblur-from="0.51" data-pblur-to="0.88">
-            <img src="hero/kvizmass/podium.png" alt="" decoding="async">
+          <!-- видео 1692×952 со сдвигом −17px, как в макете (слой «studio-light-shift»); слегка тянется за курсором -->
+          <div class="kviz-video" data-magnetic="0.02">
+            <video src="hero/kvizmass/kvizmas-1080.mp4" poster="hero/kvizmass/poster.jpg" muted playsinline preload="none" data-hero-video data-deferred></video>
           </div>
           <i class="hero-shade hero-shade--bottom"></i>
         </div>

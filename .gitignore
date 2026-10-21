@@ -4,3 +4,7 @@ artifact/
 *.zip
 .DS_Store
 .claude/
+# исходники монтажа и сырые видео (в проект кладём пережатые версии из public/hero)
+Adobe Premiere Pro Auto-Save/
+*.prproj
+mvpforum.mp4

@@ -288,6 +288,11 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
     prepareLines(root);
     resetUI(first.el);
     enter(0);
+    // видео остальных слайдов начинают грузиться только сейчас, чтобы не отнимать канал у первого
+    root.querySelectorAll<HTMLVideoElement>('video[data-deferred]').forEach((v) => {
+      v.preload = 'auto';
+      v.load();
+    });
     root.classList.add('is-ready');
 
     const chrome = root.querySelector<HTMLElement>('.hero-chrome');

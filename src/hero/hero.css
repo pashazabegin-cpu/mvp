@@ -228,15 +228,15 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 .award-logo__text { left: 286.55px; top: 4.25px; width: 248.47px; height: 71.92px; }
 
 /* 2. Форум */
-.forum-photo { left: -280px; top: -218px; width: 2239px; height: 1318px; }
-.forum-photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.forum-photo-tint { left: -280px; top: -218px; width: 2239px; height: 1318px; background: rgba(15, 10, 21, .2); }
+.forum-video { left: 0; top: 0; width: 1600px; height: 900px; overflow: hidden; }
+.forum-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .forum-logo { left: 245px; top: 410.85px; }
 .forum-logo img { width: 570px; height: 90.71px; }
 
 /* 3. Квизмас */
-.kviz-podium { left: 528px; top: 144px; width: 1460px; height: 815px; will-change: transform; }
-.kviz-podium > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* видео чуть больше кадра (как в макете) и увеличено на 2%, чтобы сдвиг магнитом не открывал края */
+.kviz-video { left: 0; top: -17px; width: 1692px; height: 952px; will-change: transform; }
+.kviz-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.02); }
 .kviz-lead { left: 248px; top: 288px; width: 476px; font-size: 22px; line-height: 30px; }
 .kviz-logo { left: 245px; top: 426px; }
 .kviz-logo img { width: 534px; height: 75.37px; }
