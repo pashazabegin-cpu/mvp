@@ -10,10 +10,11 @@
 import { gsap } from 'gsap';
 import { createGLLayer, GLSL_COMMON, loadImage, rasterize } from './gl';
 
-const BLUE = { x: 958, y: 276.03, w: 368.59, h: 360.27, color: [0x34, 0xbc, 0xf7] };
-const PINK = { x: 986, y: 248.04, w: 368.59, h: 360.27, color: [0xfa, 0x32, 0x94] };
+// координаты холста 1600×900 (= кадр 1440 из Figma + 80 слева)
+const BLUE = { x: 1045, y: 297.68, w: 328.16, h: 320.75, color: [0x34, 0xbc, 0xf7] };
+const PINK = { x: 1069.93, y: 272.75, w: 328.16, h: 320.75, color: [0xfa, 0x32, 0x94] };
 // точка, из которой растёт луч, и радиус до дальнего угла кадра (как у radial-gradient farthest-corner)
-const RAY = { x: 784, y: 999, r: 1289.9 };
+const RAY = { x: 769.56, y: 941.43, r: 1255.4 };
 
 const FRAG = `${GLSL_COMMON}
 uniform sampler2D u_base;

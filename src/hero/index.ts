@@ -12,7 +12,7 @@ import { stripsPolygon, spansFor, type StripMode } from './strips';
 import { initGlows } from './glow';
 import { initProgressiveBlur } from './progressive-blur';
 import { prepareLines, revealUI, hideUI, resetUI } from './reveal';
-import { createMagnets, canHover, reducedMotion, type Pointer } from './effects';
+import { createMagnets, reducedMotion, type Pointer } from './effects';
 import { createStripes } from './rating';
 import { createRays } from './duo';
 import { runPreloader } from './preloader';
@@ -36,6 +36,9 @@ export interface HeroOptions {
 
 type Dir = 'next' | 'prev';
 
+/** Мобильная раскладка (кадр 320×700): вертикальные экраны. Тот же запрос — в hero.css. */
+export const MOBILE_QUERY = '(max-aspect-ratio: 4/5)';
+
 export function initHero(root: HTMLElement, options: HeroOptions = {}) {
   const o = {
     autoplay: Number(root.dataset.autoplay ?? 7000),
@@ -49,21 +52,30 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
   };
   const reduce = reducedMotion();
 
-  /* ── масштаб слоёв 1600×900: фон — cover, интерфейс — contain ── */
+  /* ── масштаб ──
+     Десктоп: фон — холст 1600×900 (кадр 1440 из Figma + по 80 запаса с боков) по «cover»;
+     интерфейс — кадр 1440×900 целиком влезает в экран, а по ширине тянется сетка (14 колонок, поля 60).
+     Мобильный: кадр 320×700, фон и интерфейс в одном масштабе, интерфейс тоже тянется по ширине. */
   let cover = 1;
+  const mobileQuery = window.matchMedia(MOBILE_QUERY);
+  let mobile = mobileQuery.matches;
   const onFit: Array<() => void> = [];
   const slideEls = Array.from(root.querySelectorAll<HTMLElement>('.hero-slide'));
   const fit = () => {
+    if (mobileQuery.matches !== mobile) switchLayout(mobileQuery.matches);
     const w = root.clientWidth;
     const h = root.clientHeight;
-    cover = Math.max(w / 1600, h / 900);
+    const s = mobile ? Math.min(w / 320, h / 700) : Math.min(w / 1440, h / 900);
+    cover = mobile ? s : Math.max(w / 1600, h / 900);
     root.style.setProperty('--hero-cover', cover.toFixed(4));
-    root.style.setProperty('--hero-contain', Math.min(w / 1600, h / 900).toFixed(4));
-    // на узком экране кадрируем фон не по центру макета, а по data-focus (x в px макета)
-    const maxShift = Math.max(0, (1600 * cover - w) / 2);
+    root.style.setProperty('--ui-s', s.toFixed(4));
+    root.style.setProperty('--ui-w', `${(w / s).toFixed(2)}px`);
+    root.style.setProperty('--ui-h', `${(h / s).toFixed(2)}px`);
+    // на вертикальном экране в десктопной раскладке кадрируем фон не по центру, а по data-focus (x в px холста)
+    const maxShift = mobile ? 0 : Math.max(0, (1600 * cover - w) / 2);
     slideEls.forEach((el) => {
       const focus = Number(el.dataset.focus ?? 800);
-      const shift = w < 768 ? Math.max(-maxShift, Math.min(maxShift, (800 - focus) * cover)) : 0;
+      const shift = w < h ? Math.max(-maxShift, Math.min(maxShift, (800 - focus) * cover)) : 0;
       el.style.setProperty('--hero-shift', `${shift.toFixed(1)}px`);
     });
     onFit.forEach((f) => f());
@@ -81,13 +93,24 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
     video: el.querySelector<HTMLVideoElement>('video[data-hero-video]'),
     accent: el.dataset.accent ?? '#31a8f3',
     magnets: createMagnets(el, () => cover),
-    stripes: el.querySelector('[data-stripes]') ? createStripes(el, () => cover) : null,
-    rays: el.querySelector('[data-ray]') ? createRays(el, () => cover) : null,
+    stripes: null as ReturnType<typeof createStripes> | null,
+    rays: null as ReturnType<typeof createRays> | null,
   }));
-  slides.forEach((s) => {
-    if (s.stripes) onFit.push(s.stripes.resize);
-    if (s.rays) onFit.push(s.rays.resize);
-  });
+  // WebGL-слои («Рейтинг», «Премия и форум») — только в десктопной раскладке; на мобильном там картинки
+  const ensureGL = () => {
+    if (mobile) return;
+    slides.forEach((s) => {
+      if (!s.stripes && s.el.querySelector('[data-stripes]')) {
+        s.stripes = createStripes(s.el, () => cover);
+        onFit.push(s.stripes.resize);
+      }
+      if (!s.rays && s.el.querySelector('[data-ray]')) {
+        s.rays = createRays(s.el, () => cover);
+        onFit.push(s.rays.resize);
+      }
+    });
+  };
+  ensureGL();
   const count = slides.length;
 
   // заранее декодируем картинки слайдов, чтобы большие фоны не «вспыхивали» при первом показе
@@ -132,29 +155,49 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
     pointer.inside = false;
     updatePointer();
   };
-  if (canHover() && !reduce) {
+  // слушаем всегда (тач отсекается по pointerType в onPointerMove): если страница открылась на таче или в мобильной
+  // эмуляции, а потом появилась мышь (планшет с тачпадом, переключение эмуляции), магнит всё равно включится
+  if (!reduce) {
     root.addEventListener('pointermove', onPointerMove);
     root.addEventListener('pointerleave', onPointerLeave);
   }
 
   /* ── жизненный цикл слайда ── */
+  const startGL = (i: number) => {
+    if (mobile) return;
+    slides[i].stripes?.start();
+    if (!reduce) slides[i].rays?.play();
+  };
+  const stopGL = (i: number) => {
+    slides[i].stripes?.stop();
+    slides[i].rays?.stop();
+  };
   const enter = (i: number) => {
     const s = slides[i];
     if (s.video) {
       s.video.currentTime = 0;
       if (inView) s.video.play().catch(() => {});
     }
-    s.stripes?.start();
-    if (!reduce) s.rays?.play();
+    startGL(i);
     s.magnets.update(pointer);
     s.stripes?.update(pointer);
   };
   const leave = (i: number) => {
-    const s = slides[i];
-    s.video?.pause();
-    s.stripes?.stop();
-    s.rays?.stop();
+    slides[i].video?.pause();
+    stopGL(i);
   };
+  // поворот планшета и т. п.: при уходе в мобильную раскладку шейдеры останавливаются, при возврате — создаются и идут дальше
+  function switchLayout(toMobile: boolean) {
+    mobile = toMobile;
+    if (mobile) {
+      stopGL(current);
+    } else {
+      ensureGL();
+      if (started) startGL(current);
+    }
+  }
+  const onLayoutChange = () => fit();
+  mobileQuery.addEventListener('change', onLayoutChange);
 
   /* ── навигация и прогресс ── */
   const setActiveNav = (i: number) => {
@@ -342,6 +385,7 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
       progress?.kill();
       slides.forEach((_, i) => leave(i));
       resizeObserver.disconnect();
+      mobileQuery.removeEventListener('change', onLayoutChange);
       io.disconnect();
       navItems.forEach((b) => b.removeEventListener('click', onNavClick));
       root.removeEventListener('pointermove', onPointerMove);

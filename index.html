@@ -58,10 +58,12 @@
           <div class="forum-video">
             <video src="hero/forum/forum-1080.mp4" poster="hero/forum/poster.jpg" muted playsinline preload="none" data-hero-video data-deferred></video>
           </div>
-          <i data-glow="-765 -119 1358.25 1282 300 #821e64 0.3"></i>
-          <i data-glow="-597.66 49.58 1076.72 982.91 204.7 #fa3294 0.3"></i>
+          <!-- свечение слева: синее (Group 5) и поверх розовое (Group 34067) -->
+          <i data-glow="-584 -36 999.09 943 300 #04285e 1"></i>
+          <i data-glow="-460.91 88 792 723 204.7 #094194 1"></i>
+          <i data-glow="-685 -119 1358.25 1282 300 #821e64 0.3"></i>
+          <i data-glow="-517.66 49.58 1076.72 982.91 204.7 #fa3294 0.3"></i>
           <i class="hero-shade hero-shade--bottom"></i>
-          <i class="hero-shade hero-shade--top"></i>
         </div>
       </div>
       <div class="hero-ui">
@@ -83,8 +85,8 @@
     <!-- ═════════ 3. Квизмас ═════════ -->
     <article class="hero-slide" data-slide="kvizmass" data-focus="1180" data-accent="#0e4697" aria-label="Квизмас">
       <div class="hero-slide__zoom">
-        <div class="hero-canvas" style="--slide-bg:#020611">
-          <!-- видео 1692×952 со сдвигом −17px, как в макете (слой «studio-light-shift»); слегка тянется за курсором -->
+        <div class="hero-canvas" style="--slide-bg:#00010b">
+          <!-- видео 1600×900 от левого края кадра 1440, как в макете (слой «studio-light-shift»); слегка тянется за курсором -->
           <div class="kviz-video" data-magnetic="0.02">
             <video src="hero/kvizmass/kvizmas-1080.mp4" poster="hero/kvizmass/poster.jpg" muted playsinline preload="none" data-hero-video data-deferred></video>
           </div>
@@ -93,7 +95,9 @@
       </div>
       <div class="hero-ui">
         <div class="hero-content">
-          <p class="kviz-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
+          <div class="hero-tag" data-anim="tag" style="--tag:#31a8f3">
+            <span>Москва,</span><span>13 декабря 2026</span>
+          </div>
           <h2 class="kviz-logo" data-anim="parts">
             <img src="hero/kvizmass/logo-full.png" width="534" height="75.37" alt="MVP Квизмас">
           </h2>
@@ -112,18 +116,20 @@
           <!-- WebGL-версия фона (rating.ts); HTML-слои ниже — запасной вариант без WebGL -->
           <canvas class="gl-layer" data-gl></canvas>
           <!-- «лесенки»: позиции/градиенты/режимы наложения 1:1 из Figma -->
-          <div class="stripe" style="left:741.04px;top:-83.76px;width:274.49px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(265.28deg,rgba(8,55,124,0) 13.27%,#521d48 95.5%)" data-depth="0.9"><i></i></div>
-          <div class="stripe" style="left:1387.44px;top:-111.41px;width:82.74px;height:1409.07px;mix-blend-mode:hard-light;--g:linear-gradient(268.95deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.4"><i></i></div>
-          <div class="stripe" style="left:1476.65px;top:-106.06px;width:119.82px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(-82.11deg,rgba(82,29,72,0) 32.15%,#08377c 72.14%)" data-depth="1.1"><i></i></div>
-          <div class="stripe" style="left:615.6px;top:-171.33px;width:145px;height:1392.56px;mix-blend-mode:overlay;--g:linear-gradient(268.13deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.25"><i></i></div>
-          <div class="stripe" style="left:392.58px;top:-169.62px;width:210px;height:1423.33px;mix-blend-mode:multiply;--g:linear-gradient(267.36deg,rgba(8,55,124,0) 7.27%,#521d48 99.6%)" data-depth="0.7"><i></i></div>
-          <div class="stripe" style="left:124.68px;top:-253.93px;width:270px;height:1507.27px;mix-blend-mode:overlay;--g:linear-gradient(266.79deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1"><i></i></div>
-          <div class="stripe" style="left:-296.16px;top:-195.91px;width:403px;height:1410.49px;mix-blend-mode:hard-light;--g:linear-gradient(264.89deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="0.6"><i></i></div>
-          <i data-glow="-765 -119 1358.25 1282 300 #821e64 0.3 hard-light"></i>
-          <i data-glow="-597.66 49.58 1076.72 982.91 204.7 #fa3294 0.3 color-dodge"></i>
-          <i data-glow="1265 -36 999.09 943 300 #04285e 1 plus-lighter"></i>
-          <i data-glow="1388.09 88 792 723 204.7 #164fa4 1 color-dodge"></i>
+          <div class="stripe" style="left:731.04px;top:-83.76px;width:274.49px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(265.28deg,rgba(8,55,124,0) 13.27%,#521d48 95.5%)" data-depth="0.9"><i></i></div>
+          <div class="stripe" style="left:1377.44px;top:-111.41px;width:82.74px;height:1409.07px;mix-blend-mode:hard-light;--g:linear-gradient(268.95deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.4"><i></i></div>
+          <div class="stripe" style="left:1466.65px;top:-106.06px;width:119.82px;height:1409.07px;mix-blend-mode:overlay;--g:linear-gradient(-82.11deg,rgba(82,29,72,0) 32.15%,#08377c 72.14%)" data-depth="1.1"><i></i></div>
+          <div class="stripe" style="left:605.6px;top:-171.33px;width:145px;height:1392.56px;mix-blend-mode:overlay;--g:linear-gradient(268.13deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1.25"><i></i></div>
+          <div class="stripe" style="left:382.58px;top:-169.62px;width:210px;height:1423.33px;mix-blend-mode:multiply;--g:linear-gradient(267.36deg,rgba(8,55,124,0) 7.27%,#521d48 99.6%)" data-depth="0.7"><i></i></div>
+          <div class="stripe" style="left:114.68px;top:-253.93px;width:270px;height:1507.27px;mix-blend-mode:overlay;--g:linear-gradient(266.79deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="1"><i></i></div>
+          <div class="stripe" style="left:-306.16px;top:-195.91px;width:403px;height:1410.49px;mix-blend-mode:hard-light;--g:linear-gradient(264.89deg,rgba(82,29,72,0) 7.27%,#08377c 99.6%)" data-depth="0.6"><i></i></div>
+          <i data-glow="-775 -119 1358.25 1282 300 #821e64 0.3 hard-light"></i>
+          <i data-glow="-607.66 49.58 1076.72 982.91 204.7 #fa3294 0.3 color-dodge"></i>
+          <i data-glow="1255 -36 999.09 943 300 #04285e 1 plus-lighter"></i>
+          <i data-glow="1378.09 88 792 723 204.7 #164fa4 1 color-dodge"></i>
           <i class="hero-shade hero-shade--soft"></i>
+          <!-- мобильный фон — рендер мобильного кадра из Figma (без WebGL); на десктопе не показывается и не грузится -->
+          <img class="mob-bg" src="hero/rating/bg-mob.jpg" alt="" loading="lazy">
         </div>
       </div>
       <i class="stripes-light" data-stripes-light></i>
@@ -132,7 +138,7 @@
           <h2 class="rating-logo" data-anim="parts">
             <img src="hero/rating/logo.svg" width="540" height="82.04" alt="MVP Rating">
           </h2>
-          <p class="rating-lead" data-anim="lines">Новый Рейтинг эффективности спортивного маркетинга —<br>это комплексный анализ рынка через призму достижений его участников.</p>
+          <p class="rating-lead" data-anim="lines">Новый Рейтинг эффективности спортивного маркетинга —<br>это комплексный анализ рынка через призму достижений <span class="nobr">его участников.</span></p>
           <a class="hero-btn" href="#rating" data-anim="btn">
             <span class="hero-btn__label">Подробнее</span>
             <svg class="hero-btn__icon" width="13.51" height="11.82" viewBox="0 0 13.5065 11.8182" aria-hidden="true"><circle cx="5.065" cy="1.688" r="1.688"/><circle cx="11.818" cy="1.688" r="1.688"/><g class="hero-btn__dots-mid"><circle cx="1.688" cy="5.909" r="1.688"/><circle cx="8.442" cy="5.909" r="1.688"/></g><circle cx="5.065" cy="10.13" r="1.688"/><circle cx="11.818" cy="10.13" r="1.688"/></svg>
@@ -142,29 +148,40 @@
     </article>
 
     <!-- ═════════ 5. Премия и форум ═════════ -->
-    <article class="hero-slide" data-slide="duo" data-focus="1160" data-accent="#31a8f3" aria-label="Премия и форум">
+    <article class="hero-slide" data-slide="duo" data-focus="1210" data-accent="#31a8f3" aria-label="Премия и форум">
       <div class="hero-slide__zoom">
         <div class="hero-canvas" style="--slide-bg:#0c1836" data-ray-root>
           <!-- WebGL-версия слайда (duo.ts); HTML-слои ниже — запасной вариант и «ручки» для анимации логотипов -->
           <canvas class="gl-layer" data-gl data-tex-base="hero/duo/bg-base.jpg" data-tex-ray="hero/duo/bg-ray.jpg" data-tex-blue="hero/duo/logo-blue.svg" data-tex-pink="hero/duo/logo-pink.svg"></canvas>
-          <!-- фон 1:1 из Figma (рендер 2x): база + слой с лучом, который «прорастает» маской из точки внизу -->
-          <img class="duo-bg" src="hero/duo/bg-base.jpg" alt="">
-          <img class="duo-bg duo-bg--ray" src="hero/duo/bg-ray.jpg" alt="" data-ray>
+          <!-- фон 1:1 из Figma (рендер 2x, кадр 1440 с запасом до 1600): база + слой с лучом, который «прорастает» маской из точки внизу.
+               loading="lazy": на мобильном эти слои скрыты и не грузятся -->
+          <img class="duo-bg" src="hero/duo/bg-base.jpg" alt="" loading="lazy">
+          <img class="duo-bg duo-bg--ray" src="hero/duo/bg-ray.jpg" alt="" loading="lazy" data-ray>
           <!-- синий слой логотипа: в Figma Linear burn. Он запечён поверх фона из Figma (обычная картинка, без
                режимов наложения): вариант без луча и с лучом, второй раскрывается той же маской, что и луч. -->
           <div class="duo-logo duo-logo--blue" data-magnetic="0.022">
-            <img src="hero/duo/logo-blue-on-base.webp" alt="">
-            <img class="duo-logo__ray" src="hero/duo/logo-blue-on-ray.webp" alt="" data-ray>
+            <img src="hero/duo/logo-blue-on-base.jpg" alt="" loading="lazy">
+            <img class="duo-logo__ray" src="hero/duo/logo-blue-on-ray.jpg" alt="" loading="lazy" data-ray>
           </div>
-          <img class="duo-logo duo-logo--pink" src="hero/duo/logo-pink.svg" alt="" data-magnetic="0.05">
+          <img class="duo-logo duo-logo--pink" src="hero/duo/logo-pink.svg" alt="" loading="lazy" data-magnetic="0.05">
+          <!-- мобильный фон — рендер мобильного кадра из Figma вместе с логотипами (без WebGL) -->
+          <img class="mob-bg" src="hero/duo/bg-mob.jpg" alt="" loading="lazy">
         </div>
       </div>
       <div class="hero-ui">
         <div class="hero-content">
+          <div class="hero-tag duo-tag" data-anim="tag" style="--tag:#31a8f3">
+            <span>Москва,</span><span>24 / 30 мая 2025</span>
+          </div>
           <h2 class="duo-title" data-anim="parts">
             <img src="hero/duo/title.svg" width="542" height="64.49" alt="Премия × форум">
           </h2>
+          <!-- на десктопе — описание, на мобильном вместо него кнопка (как в макетах) -->
           <p class="duo-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
+          <a class="hero-btn hero-btn--mob" href="#duo" data-anim="btn">
+            <span class="hero-btn__label">Подробнее</span>
+            <svg class="hero-btn__icon" width="13.51" height="11.82" viewBox="0 0 13.5065 11.8182" aria-hidden="true"><circle cx="5.065" cy="1.688" r="1.688"/><circle cx="11.818" cy="1.688" r="1.688"/><g class="hero-btn__dots-mid"><circle cx="1.688" cy="5.909" r="1.688"/><circle cx="8.442" cy="5.909" r="1.688"/></g><circle cx="5.065" cy="10.13" r="1.688"/><circle cx="11.818" cy="10.13" r="1.688"/></svg>
+          </a>
         </div>
       </div>
     </article>
@@ -172,6 +189,13 @@
 
   <!-- ─── Общая шапка и навигация (не участвуют в переходе) ─── -->
   <div class="hero-ui hero-chrome">
+    <!-- мобильная шапка: «Меню» и кабинет (на десктопе скрыты); меню открывает сайт, тут только кнопка -->
+    <button class="hc-menu" type="button" aria-label="Меню" data-hero-menu data-intro>
+      <i></i><i></i><span>Меню</span>
+    </button>
+    <a class="hc-account" href="#account" aria-label="Личный кабинет" data-intro>
+      <img src="hero/common/user.svg" width="15" height="15.9" alt="">
+    </a>
     <a class="hc-partner" href="https://betboom.ru" target="_blank" rel="noopener" data-intro>
       <img src="hero/common/betboom.svg" width="136" height="23.8" alt="BetBoom">
       <span>официальный партнер</span>
