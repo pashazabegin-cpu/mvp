@@ -74,12 +74,31 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
     root.style.setProperty('--ui-s', s.toFixed(4));
     root.style.setProperty('--ui-w', `${(w / s).toFixed(2)}px`);
     root.style.setProperty('--ui-h', `${(h / s).toFixed(2)}px`);
+    // мобильный: экран обычно ниже макета (первый экран 700px макета). Нехватку сначала забирают пустые зазоры —
+    // кнопка→полосы (до 48) и под полосами (до 16), — остаток уходит из зоны KV: фон слайда уменьшается так,
+    // чтобы KV заканчивался не ниже чем на 30px под первой строкой контента (но не меньше 0.6 — иначе видео
+    // и рендеры перестанут закрывать ширину экрана)
+    let deficit = 0;
+    if (mobile) {
+      const fold = h / s - 163;
+      deficit = Math.max(0, 700 - fold);
+      const gaps = Math.min(deficit, 64);
+      root.style.setProperty('--mc', `${gaps.toFixed(1)}px`);
+      root.style.setProperty('--mn', `${Math.max(0, gaps - 48).toFixed(1)}px`);
+      deficit -= gaps;
+    }
     // на вертикальном экране в десктопной раскладке кадрируем фон не по центру, а по data-focus (x в px холста)
     const maxShift = mobile ? 0 : Math.max(0, (1600 * cover - w) / 2);
     slideEls.forEach((el) => {
       const focus = Number(el.dataset.focus ?? 800);
       const shift = w < h ? Math.max(-maxShift, Math.min(maxShift, (800 - focus) * cover)) : 0;
       el.style.setProperty('--hero-shift', `${shift.toFixed(1)}px`);
+      if (mobile) {
+        // y первой строки контента в мобильном макете (--my из hero.css)
+        const first = el.querySelector<HTMLElement>('.hero-content > *');
+        const top = (first && parseFloat(getComputedStyle(first).getPropertyValue('--my'))) || 350;
+        el.style.setProperty('--kv', Math.min(1, Math.max(0.6, 1 - deficit / (top + 30))).toFixed(3));
+      }
     });
     onFit.forEach((f) => f());
   };

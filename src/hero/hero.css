@@ -199,7 +199,7 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 .hero-tag span:first-child { min-width: 107px; padding: 6px 14px 2px 17px; }
 .hero-tag span:last-child { min-width: 195px; margin-top: -10px; padding: 8px 13px 4px 17px; }
 
-/* кнопка: форма — «сквиркл» из макета (btn.svg: заливка и внутренние тени); та же форма маской обрезает блик */
+/* кнопка: форма — «сквиркл» из макета (btn.svg: заливка и внутренние тени), блик обрезается тем же контуром */
 .hero-btn {
   --y: 584px;
   width: 195px;
@@ -210,8 +210,9 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
   align-items: start;
   padding: 16px 0 0 28.08px;
   background: url("./btn.svg") 0 0 / 100% 100% no-repeat;
-  -webkit-mask: url("./btn.svg") 0 0 / 100% 100% no-repeat;
-  mask: url("./btn.svg") 0 0 / 100% 100% no-repeat;
+  /* обрезка по контуру — вектором (clip-path), а не маской-картинкой: маску Safari растрирует мелко и под
+     масштабом мобильной версии край идёт «лесенкой». Контур — тот же, что в btn.svg (кнопка всегда 195×50) */
+  clip-path: path("M195 26.25C195 29.548 194.989 29.849 194.926 31.255C194.835 33.28 194.66 34.816 194.398 36.229C194.055 38.07 193.566 39.623 192.928 41.001C192.188 42.599 191.248 43.953 190.1 45.1C188.953 46.248 187.599 47.188 186.001 47.928C184.623 48.566 183.07 49.055 181.229 49.398C179.816 49.66 178.28 49.835 176.255 49.926C174.849 49.989 174.548 50 171.25 50H23.75C20.452 50 20.151 49.989 18.745 49.926C16.72 49.835 15.184 49.66 13.771 49.398C11.93 49.055 10.377 48.566 8.999 47.928C7.401 47.188 6.047 46.248 4.9 45.1C3.752 43.953 2.812 42.599 2.072 41.001C1.434 39.623 0.945 38.07 0.602 36.229C0.34 34.816 0.165 33.28 0.074 31.255C0.011 29.849 0 29.548 0 26.25V23.75C0 20.452 0.011 20.151 0.074 18.745C0.165 16.72 0.34 15.184 0.602 13.771C0.945 11.93 1.434 10.377 2.072 8.999C2.812 7.401 3.752 6.047 4.9 4.9C6.047 3.752 7.401 2.812 8.999 2.072C10.377 1.434 11.93 0.945 13.771 0.602C15.184 0.34 16.72 0.165 18.745 0.074C20.151 0.011 20.452 0 23.75 0H171.25C174.548 0 174.849 0.011 176.255 0.074C178.28 0.165 179.816 0.34 181.229 0.602C183.07 0.945 184.623 1.434 186.001 2.072C187.599 2.812 188.953 3.752 190.1 4.9C191.248 6.047 192.188 7.401 192.928 8.999C193.566 10.377 194.055 11.93 194.398 13.771C194.66 15.184 194.835 16.72 194.926 18.745C194.989 20.151 195 20.452 195 23.75V26.25Z");
   font-size: 13.506px;
   line-height: 21.948px;
   font-weight: 500;
@@ -333,23 +334,23 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 
 /* ── мобильная раскладка: макет 320×700, ниже — блок партнёра (кадр до 863) ── */
 @media (max-aspect-ratio: 4/5) {
-  /* --ui-s = ширина экрана / 320. Первый экран (в px макета) — высота экрана, но не меньше 480: иначе на низких
-     экранах контент залез бы под шапку (тогда первый экран чуть длиннее экрана). На таких экранах контент ещё
-     подтягивается к навигации до 40px макета (--squeeze). Под первым экраном — 163px макета на блок партнёра. */
+  /* --ui-s = ширина экрана / 320. Первый экран (--fold, в px макета) — высота экрана (не меньше 450),
+     под ним 163px макета на блок партнёра. Реальные телефоны ниже макета (700): JS (index.ts, fit) сначала сжимает
+     зазоры — кнопка→полосы до 32 и под полосами до 30 (--mc сдвигает контент, --mn полосы), — а остаток
+     забирает у KV: фон слайда уменьшается (--kv, 0.6…1), чтобы главный объект оставался над текстом. */
   .hero {
-    --fold: max(calc(var(--vh) / var(--ui-s)), 480px);
-    --squeeze: clamp(0px, calc(520px - var(--vh) / var(--ui-s)), 40px);
+    --fold: max(calc(var(--vh) / var(--ui-s)), 450px);
     height: calc((var(--fold) + 163px) * var(--ui-s));
     min-height: 0;
   }
 
-  /* фон: кадр 320×700 сверху по центру, в масштабе интерфейса; под ним и по бокам — заливка кадра */
+  /* фон: кадр 320×700 сверху по центру, в масштабе интерфейса × --kv; под ним и по бокам — заливка кадра */
   .hero-canvas {
     left: 50%;
     top: 0;
     width: 320px;
     height: 700px;
-    transform: translateX(-50%) scale(var(--hero-cover));
+    transform: translateX(-50%) scale(calc(var(--hero-cover) * var(--kv, 1)));
     transform-origin: 50% 0;
     background: none;
   }
@@ -363,19 +364,23 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
   .kviz-video video { transform: none; }
 
   /* градиент поверх KV (обычное наложение, цвет уходит в ноль): в макете — от y=240 (у «Рейтинга» от 160) до низа;
-     привязан к низу первого экрана, как и контент, — на низких экранах закрывает KV раньше, текст остаётся читаемым */
+     едет вместе с контентом. Он внутри фона, уменьшенного в --kv раз, поэтому все размеры делятся на --kv */
   .hero-shade--mob {
+    --from: 240px;
+    --a: 0px;
+    --b: 115px;
+    --c: #030f1c;
     display: block;
     left: -200px;
     width: 720px;
-    top: calc(var(--fold) - 460px + var(--squeeze));
-    height: 2000px;
+    top: calc((var(--fold) - 700px + var(--from) + var(--mc, 0px)) / var(--kv, 1));
+    height: 2400px;
     mix-blend-mode: normal;
-    background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #030f1c 115px);
+    background: linear-gradient(to bottom, rgba(3, 15, 28, 0) calc(var(--a) / var(--kv, 1)), var(--c) calc(var(--b) / var(--kv, 1)));
   }
-  [data-slide="award"] .hero-shade--mob { background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 37.6px, #030f1c 143.2px); }
-  [data-slide="kvizmass"] .hero-shade--mob { background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #030f1c 82.8px); }
-  [data-slide="rating"] .hero-shade--mob { top: calc(var(--fold) - 540px + var(--squeeze)); background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #041f3e 194.4px); }
+  [data-slide="award"] .hero-shade--mob { --a: 37.6px; --b: 143.2px; }
+  [data-slide="kvizmass"] .hero-shade--mob { --b: 82.8px; }
+  [data-slide="rating"] .hero-shade--mob { --from: 160px; --b: 194.4px; --c: #041f3e; }
 
   /* «Рейтинг» и «Премия и форум» — готовые рендеры мобильных кадров вместо WebGL и слоёв с наложением */
   .mob-bg { display: block; left: -120px; top: 0; width: 560px; height: 700px; }
@@ -390,12 +395,12 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
   .hc-partner { left: calc(50% - 68px); top: calc(100% - 115px); text-align: center; }
 
   /* навигация: 5 полос на всю ширину, без подписей; полоса прогресса — y 649 (поля по 16px — чтобы попадать пальцем) */
-  .hero-nav { left: 21px; right: 20px; width: auto; top: calc(100% - 230px); gap: 9.1px; }
+  .hero-nav { left: 21px; right: 20px; width: auto; top: calc(100% - 230px + var(--mn, 0px)); gap: 9.1px; }
   .hero-nav__item { flex: 1; width: auto; padding: 16px 0; }
   .hero-nav__label { display: none; }
 
   /* контент — от низа первого экрана (кадр 863 = первый экран 700 + блок партнёра) */
-  .hero-content > * { left: calc(20px + var(--mx, 0px)); top: calc(100% - 863px + var(--my, 0px) + var(--squeeze)); }
+  .hero-content > * { left: calc(20px + var(--mx, 0px)); top: calc(100% - 863px + var(--my, 0px) + var(--mc, 0px)); }
 
   .hero-tag { --my: 350px; font-size: 16px; line-height: 18.8px; }
   .kviz-tag { --my: 273px; }
