@@ -55,7 +55,7 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
   /* ── масштаб ──
      Десктоп: фон — холст 1600×900 (кадр 1440 из Figma + по 80 запаса с боков) по «cover»;
      интерфейс — кадр 1440×900 целиком влезает в экран, а по ширине тянется сетка (14 колонок, поля 60).
-     Мобильный: кадр 320×700, фон и интерфейс в одном масштабе, интерфейс тоже тянется по ширине. */
+     Мобильный: кадр 320 по ширине экрана, фон и интерфейс в одном масштабе; по высоте — см. hero.css. */
   let cover = 1;
   const mobileQuery = window.matchMedia(MOBILE_QUERY);
   let mobile = mobileQuery.matches;
@@ -64,8 +64,11 @@ export function initHero(root: HTMLElement, options: HeroOptions = {}) {
   const fit = () => {
     if (mobileQuery.matches !== mobile) switchLayout(mobileQuery.matches);
     const w = root.clientWidth;
+    // мобильный — по ширине (логотипы на всю ширину по сетке); высота hero на мобильном зависит от --ui-s (см. hero.css),
+    // поэтому сначала масштаб, потом высота
+    if (mobile) root.style.setProperty('--ui-s', (w / 320).toFixed(4));
     const h = root.clientHeight;
-    const s = mobile ? Math.min(w / 320, h / 700) : Math.min(w / 1440, h / 900);
+    const s = mobile ? w / 320 : Math.min(w / 1440, h / 900);
     cover = mobile ? s : Math.max(w / 1600, h / 900);
     root.style.setProperty('--hero-cover', cover.toFixed(4));
     root.style.setProperty('--ui-s', s.toFixed(4));

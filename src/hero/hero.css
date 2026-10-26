@@ -5,8 +5,9 @@
      .hero-ui     — интерфейс в пикселях макета: весь кадр 1440×900 помещается в экран, а по ширине тянется
                     сетка макета — 14 колонок, поля 60, межколонник 10 (--col — шаг колонки).
                     Шапка привязана к верху, навигация к низу, контент — к центру по высоте.
-   Мобильный (макет 320×700, тот же запрос, что MOBILE_QUERY в index.ts): фон — кадр 320×700 сверху по центру,
-     интерфейс тянется по ширине; шапка сверху, контент и навигация снизу. Без WebGL.
+   Мобильный (макет 320×700 + блок партнёра до 863, тот же запрос, что MOBILE_QUERY в index.ts): всё масштабируется
+     по ширине экрана (логотипы — на всю ширину по сетке). Первый экран = высота экрана: шапка сверху, фон-KV сверху,
+     контент и навигация — от низа первого экрана, под ним блок партнёра. Без WebGL.
    JS выставляет --hero-cover (масштаб фона), --ui-s (масштаб интерфейса), --ui-w/--ui-h (размер интерфейса в px макета).
    ────────────────────────────────────────────────────────────── */
 
@@ -22,6 +23,8 @@
   --ui-h: 900px;
   /* шаг колонки сетки: (ширина − поля 2×60 + межколонник 10) / 14 = 95 при 1440 */
   --col: calc((var(--ui-w) - 110px) / 14);
+  /* высота экрана без панелей браузера (iOS: не прыгает при прокрутке) */
+  --vh: 100vh;
   position: relative;
   height: 100vh;
   height: 100svh;
@@ -33,6 +36,7 @@
   -webkit-font-smoothing: antialiased;
   isolation: isolate;
 }
+@supports (height: 100svh) { .hero { --vh: 100svh; } }
 .hero *, .hero *::before, .hero *::after { box-sizing: border-box; }
 :where(.hero) img { display: block; max-width: none; user-select: none; -webkit-user-drag: none; }
 :where(.hero) a { color: inherit; text-decoration: none; }
@@ -84,6 +88,7 @@
 .hero-shade { pointer-events: none; mix-blend-mode: multiply; }
 .hero-shade--bottom { left: 0; top: 502px; width: 1600px; height: 398px; background: linear-gradient(to top, #04101d 3.694%, rgba(4, 15, 27, 0) 80.607%); }
 .hero-shade--soft { left: 0; top: 322px; width: 1600px; height: 661px; background: linear-gradient(to top, rgba(3, 21, 40, .7) 3.694%, rgba(10, 83, 162, 0) 80.607%); }
+.hero-shade--mob { display: none; }
 
 [data-glow] { pointer-events: none; }
 
@@ -141,23 +146,22 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 .hc-social--vk { right: 60px; }
 .hc-social:hover img { transform: translateY(-3px); }
 
-/* мобильная шапка: «Меню» и кабинет — на десктопе скрыты */
-.hc-menu, .hc-account { display: none; }
+/* мобильная шапка: «Меню» — на десктопе скрыта */
+.hc-menu { display: none; }
 .hc-menu { position: absolute; left: 21px; top: 33px; width: 100px; height: 44px; padding: 0; margin: 0; border: 0; background: none; color: #fff; font: inherit; text-align: left; cursor: pointer; }
 .hc-menu i { position: absolute; height: 1px; background: #fce39c; transition: left .4s cubic-bezier(.22, 1, .36, 1), width .4s cubic-bezier(.22, 1, .36, 1); }
 .hc-menu i:first-child { left: -.5px; top: 20.5px; width: 31px; }
 .hc-menu i:nth-child(2) { left: 16.5px; top: 27.5px; width: 14px; }
 .hc-menu:active i:nth-child(2) { left: -.5px; width: 31px; }
 .hc-menu span { position: absolute; left: 41px; top: 13px; font-size: 16px; line-height: 22px; font-weight: 400; white-space: nowrap; }
-.hc-account { position: absolute; right: 20px; top: 33px; width: 44px; height: 44px; background: url("./squircle.svg") 0 0 / 100% 100% no-repeat; }
-.hc-account img { position: absolute; left: 14.5px; top: 14.5px; width: 15px; height: 15.9px; }
 
-/* ── навигация с прогрессом: по центру, низ — 96px от низа кадра ── */
-.hero-nav { position: absolute; left: calc(50% - 460px); top: calc(100% - 96px); display: flex; gap: 30px; }
+/* ── навигация с прогрессом: по сетке со 2-й по 13-ю колонку (156…1285 при 1440), низ — 96px от низа кадра ── */
+.hero-nav { position: absolute; left: calc(61px + var(--col)); width: calc(var(--col) * 12 - 11px); top: calc(100% - 96px); display: flex; gap: 36.81px; }
 .hero-nav__item {
   --p: 0;
   position: relative;
-  width: 160px;
+  flex: 1 1 0;
+  min-width: 0;
   padding: 0 0 6px;
   margin: 0;
   border: 0;
@@ -257,8 +261,10 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 /* видео 1600×900 от левого края кадра 1440 (как в макете), увеличено на 2%, чтобы сдвиг магнитом не открывал края */
 .kviz-video { left: 80px; top: 0; width: 1600px; height: 900px; will-change: transform; }
 .kviz-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.02); }
-.kviz-logo { --x: -2px; --y: 426px; }
+.kviz-tag { --y: 204px; }
+.kviz-logo { --x: -2px; --y: 344px; }
 .kviz-logo img { width: 534px; height: 75.37px; }
+.kviz-lead { --x: -2px; --y: 450px; width: 433px; font-size: 20px; line-height: 30px; }
 
 /* 4. Рейтинг */
 .stripe { pointer-events: none; }
@@ -325,8 +331,18 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
 .hero [data-anim="lines"] .line-mask { padding-bottom: .08em; margin-bottom: -.08em; }
 .hero .nobr { white-space: nowrap; }
 
-/* ── мобильная раскладка: макет 320×700 ── */
+/* ── мобильная раскладка: макет 320×700, ниже — блок партнёра (кадр до 863) ── */
 @media (max-aspect-ratio: 4/5) {
+  /* --ui-s = ширина экрана / 320. Первый экран (в px макета) — высота экрана, но не меньше 480: иначе на низких
+     экранах контент залез бы под шапку (тогда первый экран чуть длиннее экрана). На таких экранах контент ещё
+     подтягивается к навигации до 40px макета (--squeeze). Под первым экраном — 163px макета на блок партнёра. */
+  .hero {
+    --fold: max(calc(var(--vh) / var(--ui-s)), 480px);
+    --squeeze: clamp(0px, calc(520px - var(--vh) / var(--ui-s)), 40px);
+    height: calc((var(--fold) + 163px) * var(--ui-s));
+    min-height: 0;
+  }
+
   /* фон: кадр 320×700 сверху по центру, в масштабе интерфейса; под ним и по бокам — заливка кадра */
   .hero-canvas {
     left: 50%;
@@ -337,40 +353,53 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
     transform-origin: 50% 0;
     background: none;
   }
-  .hero-canvas::before { content: ""; position: absolute; left: -200px; right: -200px; top: 0; bottom: -500px; background: var(--mob-fill, #030f1c); }
-  [data-slide="rating"] { --mob-fill: #00030a; }
-  [data-slide="duo"] { --mob-fill: #000103; }
+  .hero-canvas::before { content: ""; position: absolute; left: -200px; right: -200px; top: 0; bottom: -1500px; background: var(--mob-fill, #030f1c); }
+  [data-slide="rating"] { --mob-fill: #0d1529; }
 
   /* видео — по мобильным кадрам */
   .award-video { inset: auto; left: -258.73px; top: -2px; width: 676.39px; height: 380.87px; }
   .forum-video { left: -155px; top: 0; width: 664px; height: 374px; }
-  .kviz-video { left: -347px; top: -69px; width: 756px; height: 425px; }
+  .kviz-video { left: -308px; top: -69px; width: 756px; height: 425px; }
   .kviz-video video { transform: none; }
 
-  /* затемнение снизу (multiply) от y=240 до низа экрана */
-  .hero-shade--bottom { left: -200px; top: 240px; width: 720px; height: 960px; background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #030f1c 115px); }
-  [data-slide="award"] .hero-shade--bottom { background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 37.5px, #030f1c 143.1px); }
+  /* градиент поверх KV (обычное наложение, цвет уходит в ноль): в макете — от y=240 (у «Рейтинга» от 160) до низа;
+     привязан к низу первого экрана, как и контент, — на низких экранах закрывает KV раньше, текст остаётся читаемым */
+  .hero-shade--mob {
+    display: block;
+    left: -200px;
+    width: 720px;
+    top: calc(var(--fold) - 460px + var(--squeeze));
+    height: 2000px;
+    mix-blend-mode: normal;
+    background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #030f1c 115px);
+  }
+  [data-slide="award"] .hero-shade--mob { background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 37.6px, #030f1c 143.2px); }
+  [data-slide="kvizmass"] .hero-shade--mob { background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #030f1c 82.8px); }
+  [data-slide="rating"] .hero-shade--mob { top: calc(var(--fold) - 540px + var(--squeeze)); background: linear-gradient(to bottom, rgba(3, 15, 28, 0) 0, #041f3e 194.4px); }
 
   /* «Рейтинг» и «Премия и форум» — готовые рендеры мобильных кадров вместо WebGL и слоёв с наложением */
   .mob-bg { display: block; left: -120px; top: 0; width: 560px; height: 700px; }
-  .gl-layer, .stripe, [data-glow], .hero-shade--soft, .stripes-light, .duo-bg, .duo-logo { display: none !important; }
+  .gl-layer, .stripe, [data-glow], .hero-shade--bottom, .hero-shade--soft, .stripes-light, .duo-bg, .duo-logo { display: none !important; }
 
-  /* прелоадер: знак того же размера, что в мобильном макете */
-  .hero-preloader__anim { inset: auto; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--hero-cover)); }
+  /* прелоадер: знак того же размера, что в мобильном макете, по центру видимого экрана */
+  .hero-preloader__anim { inset: auto; left: 50%; top: calc(var(--vh) / 2); width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--hero-cover)); }
 
-  /* шапка */
-  .hc-partner, .hc-mark, .hc-contact, .hc-social { display: none; }
-  .hc-menu, .hc-account { display: block; }
+  /* шапка: только «Меню»; партнёр — по центру под навигацией (y 748 в кадре 863) */
+  .hc-mark, .hc-contact, .hc-social { display: none; }
+  .hc-menu { display: block; }
+  .hc-partner { left: calc(50% - 68px); top: calc(100% - 115px); text-align: center; }
 
   /* навигация: 5 полос на всю ширину, без подписей; полоса прогресса — y 649 (поля по 16px — чтобы попадать пальцем) */
-  .hero-nav { left: 21px; right: 20px; top: calc(100% - 67px); gap: 9.1px; }
+  .hero-nav { left: 21px; right: 20px; width: auto; top: calc(100% - 230px); gap: 9.1px; }
   .hero-nav__item { flex: 1; width: auto; padding: 16px 0; }
   .hero-nav__label { display: none; }
 
-  /* контент — от низа экрана */
-  .hero-content > * { left: calc(20px + var(--mx, 0px)); top: calc(100% - 700px + var(--my, 0px)); }
+  /* контент — от низа первого экрана (кадр 863 = первый экран 700 + блок партнёра) */
+  .hero-content > * { left: calc(20px + var(--mx, 0px)); top: calc(100% - 863px + var(--my, 0px) + var(--squeeze)); }
 
   .hero-tag { --my: 350px; font-size: 16px; line-height: 18.8px; }
+  .kviz-tag { --my: 273px; }
+  .duo-tag { --my: 278px; }
   .hero-tag span:first-child { min-width: 86px; padding: 3.9px 12px 1.3px 12.3px; }
   .hero-tag span:last-child { min-width: 153px; margin-top: -7px; padding: 5.7px 12px 2.5px 12.3px; }
 
@@ -386,16 +415,17 @@ img.pblur-layer, video.pblur-layer { width: 100%; height: 100%; object-fit: cove
   .forum-logo { --mx: 1px; --my: 434.01px; }
   .forum-logo img { width: 279px; height: 44.4px; }
 
-  .kviz-logo { --mx: 1px; --my: 436px; }
+  .kviz-logo { --mx: 1px; --my: 356px; }
   .kviz-logo img { width: 279px; height: 39.38px; }
+  .kviz-lead { --mx: 0px; --my: 420px; width: 260px; font-size: 16px; line-height: 20px; }
 
   .rating-logo { --my: 324px; }
   .rating-logo img { width: 280px; height: 42.54px; }
   .rating-lead { --my: 396px; width: 280px; font-size: 16px; line-height: 20px; }
 
-  .duo-title { --my: 437px; }
+  .duo-title { --my: 365px; }
   .duo-title img { width: 280px; height: 33.31px; }
-  .duo-lead { display: none; }
+  .duo-lead { --mx: 0px; --my: 420px; width: 260px; font-size: 16px; line-height: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

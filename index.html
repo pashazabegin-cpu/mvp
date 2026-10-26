@@ -30,6 +30,8 @@
             <video src="hero/award/statuette-1080.mp4" poster="hero/award/poster.jpg" muted playsinline preload="auto" data-hero-video></video>
           </div>
           <i class="hero-shade hero-shade--bottom"></i>
+          <!-- мобильный градиент поверх KV (обычное наложение, привязан к низу первого экрана) -->
+          <i class="hero-shade hero-shade--mob"></i>
         </div>
       </div>
       <div class="hero-ui">
@@ -64,6 +66,8 @@
           <i data-glow="-685 -119 1358.25 1282 300 #821e64 0.3"></i>
           <i data-glow="-517.66 49.58 1076.72 982.91 204.7 #fa3294 0.3"></i>
           <i class="hero-shade hero-shade--bottom"></i>
+          <!-- мобильный градиент поверх KV (обычное наложение, привязан к низу первого экрана) -->
+          <i class="hero-shade hero-shade--mob"></i>
         </div>
       </div>
       <div class="hero-ui">
@@ -91,16 +95,19 @@
             <video src="hero/kvizmass/kvizmas-1080.mp4" poster="hero/kvizmass/poster.jpg" muted playsinline preload="none" data-hero-video data-deferred></video>
           </div>
           <i class="hero-shade hero-shade--bottom"></i>
+          <!-- мобильный градиент поверх KV (обычное наложение, привязан к низу первого экрана) -->
+          <i class="hero-shade hero-shade--mob"></i>
         </div>
       </div>
       <div class="hero-ui">
         <div class="hero-content">
-          <div class="hero-tag" data-anim="tag" style="--tag:#31a8f3">
+          <div class="hero-tag kviz-tag" data-anim="tag" style="--tag:#31a8f3">
             <span>Москва,</span><span>13 декабря 2026</span>
           </div>
           <h2 class="kviz-logo" data-anim="parts">
             <img src="hero/kvizmass/logo-full.png" width="534" height="75.37" alt="MVP Квизмас">
           </h2>
+          <p class="kviz-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
           <a class="hero-btn" href="#kvizmass" data-anim="btn">
             <span class="hero-btn__label">Подробнее</span>
             <svg class="hero-btn__icon" width="13.51" height="11.82" viewBox="0 0 13.5065 11.8182" aria-hidden="true"><circle cx="5.065" cy="1.688" r="1.688"/><circle cx="11.818" cy="1.688" r="1.688"/><g class="hero-btn__dots-mid"><circle cx="1.688" cy="5.909" r="1.688"/><circle cx="8.442" cy="5.909" r="1.688"/></g><circle cx="5.065" cy="10.13" r="1.688"/><circle cx="11.818" cy="10.13" r="1.688"/></svg>
@@ -128,8 +135,10 @@
           <i data-glow="1255 -36 999.09 943 300 #04285e 1 plus-lighter"></i>
           <i data-glow="1378.09 88 792 723 204.7 #164fa4 1 color-dodge"></i>
           <i class="hero-shade hero-shade--soft"></i>
-          <!-- мобильный фон — рендер мобильного кадра из Figma (без WebGL); на десктопе не показывается и не грузится -->
+          <!-- мобильный фон — рендер мобильного кадра из Figma без градиента (без WebGL); на десктопе не показывается и не грузится -->
           <img class="mob-bg" src="hero/rating/bg-mob.jpg" alt="" loading="lazy">
+          <!-- мобильный градиент поверх KV (обычное наложение, привязан к низу первого экрана) -->
+          <i class="hero-shade hero-shade--mob"></i>
         </div>
       </div>
       <i class="stripes-light" data-stripes-light></i>
@@ -164,8 +173,10 @@
             <img class="duo-logo__ray" src="hero/duo/logo-blue-on-ray.jpg" alt="" loading="lazy" data-ray>
           </div>
           <img class="duo-logo duo-logo--pink" src="hero/duo/logo-pink.svg" alt="" loading="lazy" data-magnetic="0.05">
-          <!-- мобильный фон — рендер мобильного кадра из Figma вместе с логотипами (без WebGL) -->
+          <!-- мобильный фон — рендер мобильного кадра из Figma вместе с логотипами, без градиента (без WebGL) -->
           <img class="mob-bg" src="hero/duo/bg-mob.jpg" alt="" loading="lazy">
+          <!-- мобильный градиент поверх KV (обычное наложение, привязан к низу первого экрана) -->
+          <i class="hero-shade hero-shade--mob"></i>
         </div>
       </div>
       <div class="hero-ui">
@@ -176,7 +187,7 @@
           <h2 class="duo-title" data-anim="parts">
             <img src="hero/duo/title.svg" width="542" height="64.49" alt="Премия × форум">
           </h2>
-          <!-- на десктопе — описание, на мобильном вместо него кнопка (как в макетах) -->
+          <!-- кнопка — только на мобильном (как в макетах) -->
           <p class="duo-lead" data-anim="lines">Предновогоднее событие для спортивной, киберспортивной и беттинг-индустрии.</p>
           <a class="hero-btn hero-btn--mob" href="#duo" data-anim="btn">
             <span class="hero-btn__label">Подробнее</span>
@@ -189,13 +200,11 @@
 
   <!-- ─── Общая шапка и навигация (не участвуют в переходе) ─── -->
   <div class="hero-ui hero-chrome">
-    <!-- мобильная шапка: «Меню» и кабинет (на десктопе скрыты); меню открывает сайт, тут только кнопка -->
+    <!-- мобильная шапка: «Меню» (на десктопе скрыта); меню открывает сайт, тут только кнопка -->
     <button class="hc-menu" type="button" aria-label="Меню" data-hero-menu data-intro>
       <i></i><i></i><span>Меню</span>
     </button>
-    <a class="hc-account" href="#account" aria-label="Личный кабинет" data-intro>
-      <img src="hero/common/user.svg" width="15" height="15.9" alt="">
-    </a>
+    <!-- партнёр: на десктопе в шапке слева, на мобильном — по центру под навигацией -->
     <a class="hc-partner" href="https://betboom.ru" target="_blank" rel="noopener" data-intro>
       <img src="hero/common/betboom.svg" width="136" height="23.8" alt="BetBoom">
       <span>официальный партнер</span>
